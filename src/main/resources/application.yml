@@ -1,0 +1,58 @@
+server:
+  port: 9999
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.SQLServerDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+  shardingsphere:
+    datasource:
+      names: ds0,ds1
+      ds0:
+        type: org.apache.commons.dbcp2.BasicDataSource
+        driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        url: jdbc:sqlserver://localhost:1433;databaseName=test1;
+        username: sa
+        password: Abcd1234
+      ds1:
+        type: org.apache.commons.dbcp2.BasicDataSource
+        driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        url: jdbc:sqlserver://localhost:1433;databaseName=test2;
+        username: sa
+        password: Abcd1234
+    sharding:
+      broadcast-tables: config
+      binding-tables: user,user_detail
+      default-database-strategy:
+        inline:
+          sharding-column: id
+          algorithm-expression: ds$->{id % 2}
+      tables:
+        user:
+          actual-data-nodes: ds$->{0..1}.user$->{0..1}
+          table-strategy:
+            inline:
+              sharding-column: user_id
+              algorithm-expression: user$->{user_id % 2}
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+            props:
+              worker:
+                id: 123
+        user_detail:
+          actual-data-nodes: ds$->{0..1}.user_detail$->{0..1}
+          table-strategy:
+            inline:
+              sharding-column: user_id
+              algorithm-expression: user_detail$->{user_id % 2}
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+            props:
+              worker:
+                id: 123
+    props:
+      sql:
+        show: true
