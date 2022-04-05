@@ -12,6 +12,7 @@ CREATE TABLE [dbo].[config](
 	[create_time] [datetime] NULL,
 	[name] [varchar](64) NULL,
 	[value] [varchar](64) NULL,
+	[last_update_time] [datetime] NULL,
 PRIMARY KEY CLUSTERED
 (
 	[id] ASC
@@ -35,6 +36,7 @@ CREATE TABLE [dbo].[config](
 	[create_time] [datetime] NULL,
 	[name] [varchar](64) NULL,
 	[value] [varchar](64) NULL,
+	[last_update_time] [datetime] NULL,
 PRIMARY KEY CLUSTERED
 (
 	[id] ASC
